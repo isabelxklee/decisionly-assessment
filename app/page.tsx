@@ -6,19 +6,38 @@ import "filepond/dist/filepond.min.css";
 import { useState } from "react";
 
 export default function Home() {
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<string>();
 
-  console.log(data);
+  const processFile = (error: any, file: any) => {
+    if (error) {
+      console.error("Processing error:", error);
+      return;
+    }
+
+    const serverResponse = file.serverId;
+
+    console.log(serverResponse);
+
+    try {
+      const parsed = JSON.parse(serverResponse);
+      setData(parsed.parsedText);
+    } catch (e) {
+      console.error("Failed to parse server response:", e);
+    }
+  };
 
   return (
     <>
       <FilePond
-        onupdatefiles={(file) => setData(file)}
         server={{
-          process: "/api/upload",
+          process: {
+            url: "/api/upload",
+            method: "POST",
+          },
           fetch: null,
           revert: null,
         }}
+        onprocessfile={(error, file) => processFile(error, file)}
       />
     </>
   );

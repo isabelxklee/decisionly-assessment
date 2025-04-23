@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
       await fs.writeFile(tempFilePath, fileBuffer);
       const pdfParser = new (PDFParser as any)(null, 1);
 
-      // See pdf2json docs for more info on how the below works.
       pdfParser.on("pdfParser_dataError", (errData: any) =>
         console.log(errData.parserError)
       );
+
       pdfParser.on("pdfParser_dataReady", () => {
         parsedText = (pdfParser as any).getRawTextContent();
         console.log(parsedText);
@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
     console.log("No files found.");
   }
 
-  const response = new NextResponse(parsedText);
-  response.headers.set("FileName", fileName);
-  return response;
+  return NextResponse.json({
+    parsedText,
+    fileName,
+  });
 }
