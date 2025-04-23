@@ -14,17 +14,18 @@ export default function Home() {
       return;
     }
 
-    const serverResponse = file.serverId;
-
-    console.log(serverResponse);
+    console.log("file server id: ", file.serverId);
 
     try {
-      const parsed = JSON.parse(serverResponse);
+      const parsed = JSON.parse(file.serverId);
+      console.log("parsed: ", parsed);
       setData(parsed.parsedText);
     } catch (e) {
       console.error("Failed to parse server response:", e);
     }
   };
+
+  console.log("data: ", data);
 
   return (
     <>
@@ -33,6 +34,9 @@ export default function Home() {
           process: {
             url: "/api/upload",
             method: "POST",
+            onload: (res) => {
+              return res;
+            },
           },
           fetch: null,
           revert: null,
