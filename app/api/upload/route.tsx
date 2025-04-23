@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       );
       pdfParser.on("pdfParser_dataReady", () => {
         parsedText = (pdfParser as any).getRawTextContent();
+        console.log(parsedText);
       });
 
       pdfParser.loadPDF(tempFilePath);
