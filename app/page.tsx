@@ -6,10 +6,17 @@ import "filepond/dist/filepond.min.css";
 import { FormEvent, useState } from "react";
 import "./globals.css";
 
+interface ResponseObject {
+  merchant: string;
+  customer: string;
+  evidence: string;
+  summary: string;
+}
+
 export default function Home() {
   const [fileData, setFileData] = useState<string>();
   const [fileName, setFileName] = useState<string>();
-  const [response, setResponse] = useState<string>("");
+  const [response, setResponse] = useState<ResponseObject>();
 
   const processFile = (error: any, file: any) => {
     if (error) {
@@ -38,9 +45,8 @@ export default function Home() {
     });
 
     const data = await response.json();
-    console.log("data", data.response);
     if (response.ok) {
-      setResponse(data.response);
+      setResponse(JSON.parse(data.response));
     } else {
       console.error(data.error);
     }
@@ -83,7 +89,10 @@ export default function Home() {
       {response && (
         <div>
           <h2>Response:</h2>
-          <p>{response}</p>
+          <p>Merchant: {response.merchant}</p>
+          <p>Customer: {response.customer}</p>
+          <p>Summary: {response.summary}</p>
+          <p>Evidence: {response.evidence}</p>
         </div>
       )}
     </div>

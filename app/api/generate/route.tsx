@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     response_format: zodResponseFormat(ResponseObject, "doc_summary"),
   });
 
-  console.log("response", response.choices[0].message.content);
+  // console.log("response", response.choices[0].message.content);
 
   return NextResponse.json({ response: response.choices[0].message.content });
 }
