@@ -8,6 +8,7 @@ import "./globals.css";
 
 export default function Home() {
   const [data, setData] = useState<string>();
+  const [fileName, setFileName] = useState<string>();
 
   const processFile = (error: any, file: any) => {
     if (error) {
@@ -19,7 +20,7 @@ export default function Home() {
 
     try {
       const parsed = JSON.parse(file.serverId);
-      console.log("parsed: ", parsed);
+      setFileName(parsed.fileName);
       setData(parsed.parsedText);
     } catch (e) {
       console.error("Failed to parse server response:", e);
@@ -30,26 +31,32 @@ export default function Home() {
 
   return (
     <div>
-      <h2>Upload file</h2>
-      <FilePond
-        server={{
-          process: {
-            url: "/api/upload",
-            method: "POST",
-            onload: (res) => {
-              return res;
+      <div>
+        <h2>Upload file</h2>
+        <FilePond
+          server={{
+            process: {
+              url: "/api/upload",
+              method: "POST",
+              onload: (res) => {
+                return res;
+              },
             },
-          },
-          fetch: null,
-          revert: null,
-        }}
-        onprocessfile={(error, file) => processFile(error, file)}
-      />
-      {!data && (
-        <div>
-          <h2>File information</h2>
-        </div>
-      )}
+            fetch: null,
+            revert: null,
+          }}
+          onprocessfile={(error, file) => processFile(error, file)}
+        />
+      </div>
+      <div>
+        <h2>File information</h2>
+        {data && (
+          <>
+            <h3>Title</h3>
+            <p>{fileName}</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
