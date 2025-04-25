@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import {z} from zod;
 const client = new OpenAI();
 
 export async function POST(request: NextRequest) {
