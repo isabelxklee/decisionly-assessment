@@ -3,10 +3,10 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 export async function POST(request: NextRequest) {
-  console.log(request.body);
+  const body: NextRequest = await request.json();
 
   const prompt = `Analyze the following data: ${JSON.stringify(
-    request.body
+    body
   )}. Provide a summary.`;
 
   const response = await client.chat.completions.create({
