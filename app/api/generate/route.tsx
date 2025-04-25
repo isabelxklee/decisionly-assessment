@@ -5,9 +5,9 @@ const client = new OpenAI();
 export async function POST(request: NextRequest) {
   const body: NextRequest = await request.json();
 
-  const prompt = `Analyze the following data: ${JSON.stringify(
+  const prompt = `Analyze the following data in this chargeback representment document: ${JSON.stringify(
     body
-  )}. Provide a summary.`;
+  )}. Please provide a concise (1-2 sentences) summary of the document and evidence that the transaction was approved by the cardholder / customer.`;
 
   const response = await client.chat.completions.create({
     model: "gpt-4o-mini",
