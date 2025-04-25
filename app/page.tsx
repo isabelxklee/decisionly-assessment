@@ -6,6 +6,7 @@ import "filepond/dist/filepond.min.css";
 import { useState } from "react";
 import "./globals.css";
 
+// type checking responses from OpenAI
 interface ResponseObject {
   merchant: string;
   customer: string;
@@ -21,6 +22,8 @@ export default function Home() {
   const [status, setStatus] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // this function is called if a file is successfully parsed by FilePond
+  // sends the file data to OpenAI and then stores the response
   const promptFile = async (fileData: string) => {
     setLoading(true);
 
@@ -41,6 +44,7 @@ export default function Home() {
     }
   };
 
+  // this function is called when a file is uploaded to FilePond
   const processFile = (error: any, file: any) => {
     if (error) {
       console.error("Processing error:", error);

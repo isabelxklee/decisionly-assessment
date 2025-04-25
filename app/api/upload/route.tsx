@@ -4,6 +4,7 @@ import { promises as fs } from "fs";
 import PDFParser from "pdf2json";
 
 export async function POST(req: NextRequest) {
+  // uploaded file from FilePond
   const formData: FormData = await req.formData();
   const uploadedFiles = formData.getAll("filepond");
 
@@ -11,13 +12,17 @@ export async function POST(req: NextRequest) {
     const uploadedFile = uploadedFiles[1];
     console.log("Uploaded file:", uploadedFile);
 
+    // if the uploaded file is valid
     if (uploadedFile instanceof File) {
+      // if the uploaded file is a PDF
       if (uploadedFile.type == "application/pdf") {
+        // create a temporary file to read and store the uploaded file data
         const fileName = uploadedFile.name;
         const tempFilePath = `/tmp/${fileName}.pdf`;
         const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
         await fs.writeFile(tempFilePath, fileBuffer);
 
+        // try parsing the file data
         try {
           const parsedText: string = await new Promise((resolve, reject) => {
             const pdfParser = new (PDFParser as any)(null, 1);
@@ -27,6 +32,7 @@ export async function POST(req: NextRequest) {
               reject(errData.parserError);
             });
 
+            // extract the text data from the PDF
             pdfParser.on("pdfParser_dataReady", () => {
               const text = (pdfParser as any).getRawTextContent();
               resolve(text);
@@ -35,6 +41,7 @@ export async function POST(req: NextRequest) {
             pdfParser.loadPDF(tempFilePath);
           });
 
+          // return the response as JSON
           return NextResponse.json({
             parsedText,
             fileName,
@@ -54,6 +61,7 @@ export async function POST(req: NextRequest) {
     console.log("Error: No files were found.");
   }
 
+  // if all else fails, return JSON with empty values
   return NextResponse.json({
     parsedtext: "",
     uploadedFile: "",
