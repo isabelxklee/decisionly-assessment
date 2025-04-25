@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
-import { v4 as uuidv4 } from "uuid";
 import PDFParser from "pdf2json";
 
 export async function POST(req: NextRequest) {
@@ -13,7 +12,7 @@ export async function POST(req: NextRequest) {
     console.log("Uploaded file:", uploadedFile);
 
     if (uploadedFile instanceof File) {
-      const fileName = uuidv4();
+      const fileName = uploadedFile.name;
       const tempFilePath = `/tmp/${fileName}.pdf`;
       const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
       await fs.writeFile(tempFilePath, fileBuffer);
@@ -52,6 +51,6 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     parsedtext: "",
-    fileName: "",
+    uploadedFile: "",
   });
 }
