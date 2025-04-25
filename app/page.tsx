@@ -3,7 +3,7 @@
 
 import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import "./globals.css";
 
 interface ResponseObject {
@@ -14,28 +14,10 @@ interface ResponseObject {
 }
 
 export default function Home() {
-  const [fileData, setFileData] = useState<string>();
   const [fileName, setFileName] = useState<string>();
   const [response, setResponse] = useState<ResponseObject>();
 
-  const processFile = (error: any, file: any) => {
-    if (error) {
-      console.error("Processing error:", error);
-      return;
-    }
-
-    try {
-      const parsed = JSON.parse(file.serverId);
-      setFileName(parsed.fileName);
-      setFileData(parsed.parsedText);
-    } catch (e) {
-      console.error("Failed to parse server response:", e);
-    }
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const promptFile = async (fileData: string) => {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -49,6 +31,21 @@ export default function Home() {
       setResponse(JSON.parse(data.response));
     } else {
       console.error(data.error);
+    }
+  };
+
+  const processFile = (error: any, file: any) => {
+    if (error) {
+      console.error("Processing error:", error);
+      return;
+    }
+
+    try {
+      const data = JSON.parse(file.serverId);
+      setFileName(data.fileName);
+      promptFile(data.parsedText);
+    } catch (e) {
+      console.error("Failed to parse server response:", e);
     }
   };
 
@@ -73,28 +70,30 @@ export default function Home() {
       </div>
       <div>
         <h2>File information</h2>
-        {fileData && (
+        {fileName && (
           <>
             <div>
               <h3>Title</h3>
               <p>{fileName}</p>
             </div>
-            <h3>Chargeback Representment Info</h3>
           </>
         )}
       </div>
-      <form onSubmit={handleSubmit}>
-        <button type="submit">Generate Summary</button>
-      </form>
-      {response && (
-        <div>
-          <h2>Response:</h2>
-          <p>Merchant: {response.merchant}</p>
-          <p>Customer: {response.customer}</p>
-          <p>Summary: {response.summary}</p>
-          <p>Evidence: {response.evidence}</p>
-        </div>
-      )}
+      <div>
+        <h2>Chargeback Representment Info</h2>
+        {response && (
+          <>
+            <label>Merchant</label>
+            <p>{response.merchant}</p>
+            <label>Customer</label>
+            <p>{response.customer}</p>
+            <label>Summary</label>
+            <p>{response.summary}</p>
+            <label>Evidence</label>
+            <p>{response.evidence}</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
