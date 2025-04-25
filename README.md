@@ -45,6 +45,20 @@ From this research, I gathered that the most important data points to extract an
 - Evidence showing that the transaction was approved by the cardholder
 - Proof of services rendered
 
+## Future considerations
+
+If I were given more time for this assignment, here are the things that I would have tackled:
+
+- Become more comfortable with AI tooling
+  - Write more sophisticated prompts.
+  - Expand the JSON schema to contain more concise data points.
+- Error handling
+  - My use of error handling in this application is quite rudimentary. I think I rely too heavily on `if...else` statements and `console.log` statements when providing feedback to the user.
+  - I would like to implement more sophisticated error handling and create better guard rails for checking file formats and the parsed data within them.
+- Batch file upload
+  - Since the value prop is to help merchants process disputes at scale, there will need to be infrastructure for handling many, _many_ file uploads and parsing data, while ensuring speed and accuracy
+  - My application is built with the goal of processing one file at a time, but that's not realisitc for the proposed use case
+
 ## Tech Stack
 
 - Next.js
