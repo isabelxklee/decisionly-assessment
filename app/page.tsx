@@ -15,7 +15,7 @@ interface ResponseObject {
 
 export default function Home() {
   const [fileName, setFileName] = useState<string>();
-  const [response, setResponse] = useState<ResponseObject>();
+  const [response, setResponse] = useState<ResponseObject | null>();
   const [status, setStatus] = useState<boolean>(true);
 
   const promptFile = async (fileData: string) => {
@@ -49,6 +49,7 @@ export default function Home() {
       } else {
         console.log("Error: the returned object is empty");
         setStatus(false);
+        setResponse(null);
       }
     } catch (e) {
       console.error("Failed to parse server response:", e);
