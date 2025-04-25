@@ -12,12 +12,14 @@ export async function POST(request: NextRequest) {
     merchant: z.string(),
     customer: z.string(),
     summary: z.string(),
+    purchaseType: z.string(),
     evidence: z.string(),
+    reason: z.string(),
   });
 
   const prompt = `Analyze the following data in this chargeback representment document: ${JSON.stringify(
     body
-  )}. Please provide a concise (1-2 sentences) summary of the document and evidence that the transaction was approved by the cardholder / customer.`;
+  )}. Please provide a 1-sentence summary of the document and 1-2 sentences of evidence that the transaction was approved by the cardholder / customer. Please state if the purchase type is a digital product or physical product. If the transaction is regarding a digital product, please provide evidence that the digital product was accessed or used by the customer. If the transaction is regarding a physical product, please provide shipping tracking numbers and any proof of successful delivery. Please state the customer's reason for creating the chargeback claim. If there is no explicit reason, please state "N/A".`;
 
   const response = await client.chat.completions.create({
     model: "gpt-4o-mini",

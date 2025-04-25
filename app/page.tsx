@@ -11,6 +11,8 @@ interface ResponseObject {
   customer: string;
   evidence: string;
   summary: string;
+  purchaseType: string;
+  reason: string;
 }
 
 export default function Home() {
@@ -44,6 +46,7 @@ export default function Home() {
     try {
       const data = JSON.parse(file.serverId);
       if (data.uploadedFile !== "" && data.parsedText !== "") {
+        setStatus(true);
         setFileName(data.fileName);
         promptFile(data.parsedText);
       } else {
@@ -86,8 +89,12 @@ export default function Home() {
             <p>{response.merchant}</p>
             <label>Customer</label>
             <p>{response.customer}</p>
+            <label>Purchase type</label>
+            <p>{response.purchaseType}</p>
             <label>Summary</label>
             <p>{response.summary}</p>
+            <label>Reason Code</label>
+            <p>{response.reason}</p>
             <label>Evidence</label>
             <p>{response.evidence}</p>
           </>
