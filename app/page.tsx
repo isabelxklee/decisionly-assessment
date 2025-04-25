@@ -4,6 +4,7 @@
 import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import { useState } from "react";
+import "./globals.css";
 
 export default function Home() {
   const [data, setData] = useState<string>();
@@ -28,7 +29,8 @@ export default function Home() {
   console.log("data: ", data);
 
   return (
-    <>
+    <div>
+      <h2>Upload file</h2>
       <FilePond
         server={{
           process: {
@@ -43,6 +45,11 @@ export default function Home() {
         }}
         onprocessfile={(error, file) => processFile(error, file)}
       />
-    </>
+      {!data && (
+        <div>
+          <h2>File information</h2>
+        </div>
+      )}
+    </div>
   );
 }
