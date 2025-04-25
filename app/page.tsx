@@ -69,20 +69,11 @@ export default function Home() {
         />
       </div>
       <div>
-        <h2>File information</h2>
-        {fileName && (
-          <>
-            <div>
-              <h3>Title</h3>
-              <p>{fileName}</p>
-            </div>
-          </>
-        )}
-      </div>
-      <div>
         <h2>Chargeback Representment Info</h2>
         {response && (
           <>
+            <label>File name</label>
+            {fileName && <p>{fileName}</p>}
             <label>Merchant</label>
             <p>{response.merchant}</p>
             <label>Customer</label>
