@@ -19,8 +19,11 @@ export default function Home() {
   const [fileName, setFileName] = useState<string>();
   const [response, setResponse] = useState<ResponseObject | null>();
   const [status, setStatus] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const promptFile = async (fileData: string) => {
+    setLoading(true);
+
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -30,6 +33,7 @@ export default function Home() {
     });
 
     const data = await response.json();
+    setLoading(false);
     if (response.ok) {
       setResponse(JSON.parse(data.response));
     } else {
@@ -81,23 +85,29 @@ export default function Home() {
       </div>
       <div>
         <h2>Chargeback Representment Info</h2>
-        {response && (
+        {loading ? (
           <>
-            <label>File name</label>
-            {fileName && <p>{fileName}</p>}
-            <label>Merchant</label>
-            <p>{response.merchant}</p>
-            <label>Customer</label>
-            <p>{response.customer}</p>
-            <label>Purchase type</label>
-            <p>{response.purchaseType}</p>
-            <label>Summary</label>
-            <p>{response.summary}</p>
-            <label>Reason Code</label>
-            <p>{response.reason}</p>
-            <label>Evidence</label>
-            <p>{response.evidence}</p>
+            <p>Loading data... beep boop...</p>
           </>
+        ) : (
+          response && (
+            <>
+              <label>File name</label>
+              {fileName && <p>{fileName}</p>}
+              <label>Merchant</label>
+              <p>{response.merchant}</p>
+              <label>Customer</label>
+              <p>{response.customer}</p>
+              <label>Purchase type</label>
+              <p>{response.purchaseType}</p>
+              <label>Summary</label>
+              <p>{response.summary}</p>
+              <label>Reason Code</label>
+              <p>{response.reason}</p>
+              <label>Evidence</label>
+              <p>{response.evidence}</p>
+            </>
+          )
         )}
       </div>
     </div>
