@@ -3,12 +3,13 @@
 
 import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
-import { useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import "./globals.css";
 
 export default function Home() {
-  const [data, setData] = useState<string>();
+  const [fileData, setFileData] = useState<string>();
   const [fileName, setFileName] = useState<string>();
+  const [response, setResponse] = useState<string>("");
 
   const processFile = (error: any, file: any) => {
     if (error) {
@@ -19,22 +20,30 @@ export default function Home() {
     try {
       const parsed = JSON.parse(file.serverId);
       setFileName(parsed.fileName);
-      setData(parsed.parsedText);
+      setFileData(parsed.parsedText);
     } catch (e) {
       console.error("Failed to parse server response:", e);
     }
   };
 
-  useEffect(() => {
-    const getAIReponse = async () => {
-      const response = await fetch("/api/ai");
-      console.log(response);
-    };
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-    getAIReponse();
-  }, []);
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileData }),
+    });
 
-  console.log("data: ", data);
+    const data = await response.json();
+    if (response.ok) {
+      setResponse(data.result);
+    } else {
+      console.error(data.error);
+    }
+  };
 
   return (
     <div>
@@ -57,7 +66,7 @@ export default function Home() {
       </div>
       <div>
         <h2>File information</h2>
-        {data && (
+        {fileData && (
           <>
             <div>
               <h3>Title</h3>
@@ -67,6 +76,15 @@ export default function Home() {
           </>
         )}
       </div>
+      <form onSubmit={handleSubmit}>
+        <button type="submit">Generate Summary</button>
+      </form>
+      {response && (
+        <div>
+          <h2>Response:</h2>
+          <p>{response}</p>
+        </div>
+      )}
     </div>
   );
 }
