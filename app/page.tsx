@@ -16,8 +16,6 @@ export default function Home() {
       return;
     }
 
-    console.log("file server id: ", file.serverId);
-
     try {
       const parsed = JSON.parse(file.serverId);
       setFileName(parsed.fileName);
@@ -52,8 +50,11 @@ export default function Home() {
         <h2>File information</h2>
         {data && (
           <>
-            <h3>Title</h3>
-            <p>{fileName}</p>
+            <div>
+              <h3>Title</h3>
+              <p>{fileName}</p>
+            </div>
+            <h3>Chargeback Representment Info</h3>
           </>
         )}
       </div>
