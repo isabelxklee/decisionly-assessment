@@ -16,6 +16,7 @@ interface ResponseObject {
 export default function Home() {
   const [fileName, setFileName] = useState<string>();
   const [response, setResponse] = useState<ResponseObject>();
+  const [status, setStatus] = useState<boolean>(true);
 
   const promptFile = async (fileData: string) => {
     const response = await fetch("/api/generate", {
@@ -42,8 +43,13 @@ export default function Home() {
 
     try {
       const data = JSON.parse(file.serverId);
-      setFileName(data.fileName);
-      promptFile(data.parsedText);
+      if (data.uploadedFile !== "" && data.parsedText !== "") {
+        setFileName(data.fileName);
+        promptFile(data.parsedText);
+      } else {
+        console.log("Error: the returned object is empty");
+        setStatus(false);
+      }
     } catch (e) {
       console.error("Failed to parse server response:", e);
     }
@@ -67,6 +73,7 @@ export default function Home() {
           }}
           onprocessfile={(error, file) => processFile(error, file)}
         />
+        {!status && <p>🚨 Please upload a different file. 🚨</p>}
       </div>
       <div>
         <h2>Chargeback Representment Info</h2>
