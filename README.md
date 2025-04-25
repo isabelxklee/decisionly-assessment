@@ -2,16 +2,27 @@
 
 ## Getting Started
 
-First, run the development server:
+1. Install Node.js.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. Git clone this repository.
+
+3. Install the project packages.
+
+```
+$ npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Start development server.
+
+```
+$ npm run dev
+```
+
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- Open AI
+- PDF2JSON, FilePond
