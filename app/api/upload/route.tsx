@@ -12,40 +12,46 @@ export async function POST(req: NextRequest) {
     console.log("Uploaded file:", uploadedFile);
 
     if (uploadedFile instanceof File) {
-      const fileName = uploadedFile.name;
-      const tempFilePath = `/tmp/${fileName}.pdf`;
-      const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
-      await fs.writeFile(tempFilePath, fileBuffer);
+      if (uploadedFile.type == "application/pdf") {
+        const fileName = uploadedFile.name;
+        const tempFilePath = `/tmp/${fileName}.pdf`;
+        const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
+        await fs.writeFile(tempFilePath, fileBuffer);
 
-      try {
-        const parsedText: string = await new Promise((resolve, reject) => {
-          const pdfParser = new (PDFParser as any)(null, 1);
+        try {
+          const parsedText: string = await new Promise((resolve, reject) => {
+            const pdfParser = new (PDFParser as any)(null, 1);
 
-          pdfParser.on("pdfParser_dataError", (errData: any) => {
-            console.log(errData.parserError);
-            reject(errData.parserError);
+            pdfParser.on("pdfParser_dataError", (errData: any) => {
+              console.log(errData.parserError);
+              reject(errData.parserError);
+            });
+
+            pdfParser.on("pdfParser_dataReady", () => {
+              const text = (pdfParser as any).getRawTextContent();
+              resolve(text);
+            });
+
+            pdfParser.loadPDF(tempFilePath);
           });
 
-          pdfParser.on("pdfParser_dataReady", () => {
-            const text = (pdfParser as any).getRawTextContent();
-            resolve(text);
+          return NextResponse.json({
+            parsedText,
+            fileName,
           });
-
-          pdfParser.loadPDF(tempFilePath);
-        });
-
-        return NextResponse.json({
-          parsedText,
-          fileName,
-        });
-      } catch (error) {
-        console.error("Upload failed: ", error);
+        } catch (error) {
+          console.error("Upload failed: ", error);
+        }
+      } else {
+        console.log(
+          `File Type Error: The uploaded file type is ${uploadedFile.type}. Please upload a PDF instead.`
+        );
       }
     } else {
-      console.log("Uploaded file is not in the correct format.");
+      console.log("Error: The uploaded file is not in the correct format.");
     }
   } else {
-    console.log("No files found.");
+    console.log("Error: No files were found.");
   }
 
   return NextResponse.json({
