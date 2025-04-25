@@ -6,9 +6,33 @@ import "filepond/dist/filepond.min.css";
 import { useState } from "react";
 import "./globals.css";
 
+interface ResponseObject {
+  merchant: string;
+  customer: string;
+  evidence: string;
+  summary: string;
+}
+
 export default function Home() {
-  const [data, setData] = useState<string>();
   const [fileName, setFileName] = useState<string>();
+  const [response, setResponse] = useState<ResponseObject>();
+
+  const promptFile = async (fileData: string) => {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileData }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      setResponse(JSON.parse(data.response));
+    } else {
+      console.error(data.error);
+    }
+  };
 
   const processFile = (error: any, file: any) => {
     if (error) {
@@ -17,15 +41,13 @@ export default function Home() {
     }
 
     try {
-      const parsed = JSON.parse(file.serverId);
-      setFileName(parsed.fileName);
-      setData(parsed.parsedText);
+      const data = JSON.parse(file.serverId);
+      setFileName(data.fileName);
+      promptFile(data.parsedText);
     } catch (e) {
       console.error("Failed to parse server response:", e);
     }
   };
-
-  console.log("data: ", data);
 
   return (
     <div>
@@ -47,14 +69,19 @@ export default function Home() {
         />
       </div>
       <div>
-        <h2>File information</h2>
-        {data && (
+        <h2>Chargeback Representment Info</h2>
+        {response && (
           <>
-            <div>
-              <h3>Title</h3>
-              <p>{fileName}</p>
-            </div>
-            <h3>Chargeback Representment Info</h3>
+            <label>File name</label>
+            {fileName && <p>{fileName}</p>}
+            <label>Merchant</label>
+            <p>{response.merchant}</p>
+            <label>Customer</label>
+            <p>{response.customer}</p>
+            <label>Summary</label>
+            <p>{response.summary}</p>
+            <label>Evidence</label>
+            <p>{response.evidence}</p>
           </>
         )}
       </div>
