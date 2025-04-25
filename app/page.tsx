@@ -38,8 +38,9 @@ export default function Home() {
     });
 
     const data = await response.json();
+    console.log("data", data.response);
     if (response.ok) {
-      setResponse(data.result);
+      setResponse(data.response);
     } else {
       console.error(data.error);
     }

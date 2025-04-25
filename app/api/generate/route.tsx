@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     messages: [{ role: "user", content: prompt }],
   });
 
-  console.log("response", response.choices[0].message);
+  // console.log("response", response.choices[0].message.content);
 
-  return NextResponse.json({ response: response.choices[0].message });
+  return NextResponse.json({ response: response.choices[0].message.content });
 }
