@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 export async function GET() {
@@ -12,6 +13,6 @@ export async function GET() {
   });
 
   completion.then((result) => {
-    return result.choices[0].message;
+    return NextResponse.json({ result: result.choices[0].message });
   });
 }

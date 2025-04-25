@@ -3,7 +3,7 @@
 
 import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./globals.css";
 
 export default function Home() {
@@ -24,6 +24,15 @@ export default function Home() {
       console.error("Failed to parse server response:", e);
     }
   };
+
+  useEffect(() => {
+    const getAIReponse = async () => {
+      const response = await fetch("/api/ai");
+      console.log(response);
+    };
+
+    getAIReponse();
+  }, []);
 
   console.log("data: ", data);
 
